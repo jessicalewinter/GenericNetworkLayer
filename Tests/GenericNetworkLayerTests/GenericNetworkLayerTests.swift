@@ -1,6 +1,6 @@
 import XCTest
 import class Foundation.Bundle
-
+@testable import GenericNetworkLayer
 final class GenericNetworkLayerTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
@@ -31,6 +31,25 @@ final class GenericNetworkLayerTests: XCTestCase {
 
         XCTAssertEqual(output, "Hello, world!\n")
         #endif
+    }
+    
+    struct Blogger {
+        func makeHeadline(from input: String) -> String {
+            input.capitalized
+        }
+    }
+    
+    func test_makeHeadline_shouldShowCapitalizeAllStrings() {
+        // Given
+        let blogger = Blogger()
+        let input: String = "hello mama"
+        let expectedResult: String = "Hello Mama"
+        
+        // When
+        let result = blogger.makeHeadline(from: input)
+        
+        // Then
+        XCTAssertEqual(result, expectedResult)
     }
 
     /// Returns path to the built products directory.
