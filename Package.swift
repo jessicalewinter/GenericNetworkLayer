@@ -7,7 +7,7 @@ let package = Package(
     name: "GenericNetworkLayer",
     products: [
         .library(
-            name: "GenericNetworkLayer",
+            name: "NetworkLayer",
             targets: ["GenericNetworkLayer"]
         )
     ],
