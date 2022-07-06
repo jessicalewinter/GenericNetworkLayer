@@ -1,2 +1,2 @@
 # GenericNetworkLayer
-Tiny NetworkLayer written in Swift
+Tiny Network Library written in Swift
