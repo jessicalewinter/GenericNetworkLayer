@@ -5,25 +5,27 @@ public protocol NetworkProvidable {
 }
 
 public final class NetworkProvider: NetworkProvidable {
-    public var session: URLSessionable
+    private let session: URLSessionable
     private let globalQueue: Dispatching
-    private let jsonDecodable: JSONDecodable
+    private let decoder: JSONDecodable
     
     public init(
         session: URLSessionable = URLSession.shared,
         globalQueue: Dispatching = DispatchQueue.global(),
-        jsonDecodable: JSONDecodable = JSONDecoder()
+        decoder: JSONDecodable = JSONDecoder(.convertFromSnakeCase)
     ) {
         self.session = session
         self.globalQueue = globalQueue
-        self.jsonDecodable = jsonDecodable
+        self.decoder = decoder
     }
     
     public func request<T: Decodable>(type: T.Type, endpoint: EndpointExecutable, completion: @escaping (Result<T, NetworkError>) -> Void) {
         
         let request = URLRequest(endpoint: endpoint)
         
-        let task = session.dataTask(request: request) { data, response, error in
+        let task = session.dataTask(request: request) { [weak self] data, response, error in
+            guard let self = self else { return }
+            
             if let error = error {
                 completion(.failure(.transportError(error)))
             }
@@ -44,12 +46,8 @@ public final class NetworkProvider: NetworkProvidable {
             
             switch statusCode {
             case 200...299:
-                let decoder = JSONDecoder()
-                // Removes the need to use codingkeys on model
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
-                
                 do {
-                    let model = try decoder.decode(T.self, from: data)
+                    let model = try self.decoder.decode(T.self, from: data)
                     completion(.success(model))
                 } catch let error {
                     completion(.failure(.decodeFailure(error)))
@@ -63,11 +61,8 @@ public final class NetworkProvider: NetworkProvidable {
             }
         }
         
-        
-        DispatchQueue.global(qos: .userInitiated).async {
+        globalQueue.async {
             task.resume()
         }
     }
-    
-    
 }

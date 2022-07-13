@@ -13,3 +13,10 @@ public protocol JSONDecodable {
 }
 
 extension JSONDecoder: JSONDecodable {}
+
+extension JSONDecoder {
+    public convenience init(_ decodingStrategy: JSONDecoder.KeyDecodingStrategy) {
+        self.init()
+        keyDecodingStrategy = decodingStrategy
+    }
+}
