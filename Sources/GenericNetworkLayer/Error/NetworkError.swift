@@ -2,6 +2,9 @@ import Foundation
 
 /// Map all network possible errors
 public enum NetworkError: Error {
+    /// Could not stablish a connection
+    case connectionFailure
+    
     /// Client Error with statusCode between 400 and 500
     case clientError(_ statusCode: Int, _ dataResponse: String)
     
@@ -32,13 +35,19 @@ public enum NetworkError: Error {
     /// Indicates an error on the transport layer, e.g. not being able to connect to the server
     case transportError(Error)
     
+    /// App needs to upgrade
+    case upgradeRequired
+    
     /// Indicates an error on the transport layer, e.g. not being able to connect to the server
     case unknown
 }
 
+// MARK: LocalizedError
 extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
+        case .connectionFailure:
+            return "Could not stablish a connection"
         case let .clientError(statusCode, dataResponse):
             return "Client Error with code \(statusCode).\nData Response: \(dataResponse)"
         case .decodeFailure(let error):
@@ -61,6 +70,15 @@ extension NetworkError: LocalizedError {
             return "Transport error: \(error.localizedDescription)"
         case .unknown:
             return "Unknown error"
+        case .upgradeRequired:
+            return "App needs to update"
         }
+    }
+}
+
+// MARK: Equatable
+extension NetworkError: Equatable {
+    public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
+        return true
     }
 }
