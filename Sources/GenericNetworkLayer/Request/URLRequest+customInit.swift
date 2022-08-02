@@ -15,6 +15,10 @@ extension URLRequest {
            endpoint.headers?.forEach { key, value in
                addValue(value, forHTTPHeaderField: key)
            }
+
+           guard case let .requestWithBody(payload) = endpoint.task else {
+                   return
+           }
                       
            if let payloadEncoded = payload.prepareBody() {
                self.httpBody = payloadEncoded
