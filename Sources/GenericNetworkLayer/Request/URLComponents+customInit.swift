@@ -15,5 +15,7 @@ extension URLComponents {
         queryItems = parameters.map({ (key, value) in
             return URLQueryItem(name: key, value: String(describing: value))
         })
+        
+        print(self.url ?? "hello")
     }
 }

@@ -1,13 +1,17 @@
 import Foundation
 
-public protocol RequestBuilding {
+public protocol URLRequestBuilding {
     
 }
 
-final class RequestBuilder: RequestBuilding {
+final class URLRequestBuilder: RequestBuilding {
     private let endpoint: Endpoint
     
     public init(endpoint: Endpoint) {
         self.endpoint = endpoint
     }
+    
+//    func build() throws ->  URLRequest {
+//
+//    }
 }
