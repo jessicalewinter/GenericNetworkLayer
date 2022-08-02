@@ -5,7 +5,7 @@ extension URLRequest {
     /// A URL request that is builded from the service's specifications
     /// - Parameter service: The object that specify the needed information to make an http request
     
-     init(endpoint: EndpointExecutable) {
+     init(endpoint: Endpoint) {
        if let urlComponents = URLComponents(endpoint: endpoint),
            let url = urlComponents.url {
            self.init(url: url)

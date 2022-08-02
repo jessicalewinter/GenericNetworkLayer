@@ -2,8 +2,8 @@ import Foundation
 
 public typealias Headers = [String: String]
 
-public protocol EndpointExecutable {
-    var baseURL: URL { get }
+public protocol Endpoint {
+    var baseURL: String { get }
     var path: String { get }
     var method: HTTPMethod { get }
     var task: Task { get }
