@@ -45,7 +45,9 @@ public final class NetworkProvider: NetworkProvidable {
             switch statusCode {
             case 200...299:
                 do {
-                    guard let self = self else {return}
+                    guard let self = self else {
+                        return completion(.failure(.unknown))
+                    }
                     let model = try self.decoder.decode(T.self, from: data)
                     completion(.success(model))
                 } catch let error {
