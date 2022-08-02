@@ -5,7 +5,7 @@ extension URLComponents {
     /// Build the URL that conforms to the service that receives as parameter
     /// - Parameter service: The object that specify the information needed to do a request
     
-    init?(endpoint: EndpointExecutable) {
+    init?(endpoint: Endpoint) {
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         self.init(url: url, resolvingAgainstBaseURL: false)
         
