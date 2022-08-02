@@ -83,3 +83,32 @@ extension NetworkError: Equatable {
         return true
     }
 }
+
+// MARK: CaseIterable
+extension NetworkError: CaseIterable {
+    private static var errorMock: Error {
+        NSError(domain: "mock", code: 1)
+    }
+    
+    private static var serverErrorMock: (statusCode: Int, String, String) {
+        return (200, "mock", "yes")
+    }
+    
+    public static var allCases: [NetworkError] {
+        return [
+            .connectionFailure,
+            .clientError(200, "mock"),
+            .decodeFailure(NetworkError.errorMock),
+            .encodeFailure(NetworkError.errorMock),
+            .invalidDataToStringCast,
+            .invalidURLResponseToHTTPResponseCast,
+            .invalidURL(url: "mock"),
+            .noData,
+            .serverError(serverErrorMock.0, serverErrorMock.1, serverErrorMock.2),
+            .validationError("mock"),
+            .transportError(NetworkError.errorMock),
+            .upgradeRequired,
+            .unknown
+        ]
+    }
+}
