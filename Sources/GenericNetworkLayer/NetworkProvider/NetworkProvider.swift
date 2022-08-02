@@ -23,7 +23,7 @@ public final class NetworkProvider: NetworkProvidable {
         
         let request = URLRequest(endpoint: endpoint)
         
-        let task = session.dataTask(request: request) { [weak self] data, response, error in
+        let task = session.dataTask(request: request) { data, response, error in
             if let error = error {
                 completion(.failure(.transportError(error)))
             }
@@ -45,9 +45,6 @@ public final class NetworkProvider: NetworkProvidable {
             switch statusCode {
             case 200...299:
                 do {
-                    guard let self = self else {
-                        return completion(.failure(.unknown))
-                    }
                     let model = try self.decoder.decode(T.self, from: data)
                     completion(.success(model))
                 } catch let error {
