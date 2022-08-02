@@ -45,8 +45,7 @@ public final class NetworkProvider: NetworkProvidable {
             switch statusCode {
             case 200...299:
                 do {
-                    let model = try JSONDecoder(.convertFromSnakeCase).decode(T.self, from: data)
-//                    let model = try self.decoder.decode(T.self, from: data)
+                    let model = try self.decoder.decode(T.self, from: data)
                     completion(.success(model))
                 } catch let error {
                     completion(.failure(.decodeFailure(error)))
