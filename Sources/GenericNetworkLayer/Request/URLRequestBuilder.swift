@@ -10,8 +10,4 @@ final class URLRequestBuilder: URLRequestBuilding {
     public init(endpoint: Endpoint) {
         self.endpoint = endpoint
     }
-    
-//    func build() throws ->  URLRequest {
-//
-//    }
 }

@@ -6,12 +6,11 @@ extension URLComponents {
     /// - Parameter service: The object that specify the information needed to do a request
     
     init?(endpoint: Endpoint) {
-        self.init(string: endpoint.baseURL)
-        self.path = endpoint.path
+        let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
+        self.init(url: url, resolvingAgainstBaseURL: false)
         
-        guard case let .requestParameters(parameters) = endpoint.task else {
-            return
-        }
+        guard case let .requestParameters(parameters) = endpoint.task,
+            endpoint.parametersEncoding == .url else { return }
         
         queryItems = parameters.map({ (key, value) in
             return URLQueryItem(name: key, value: String(describing: value))
