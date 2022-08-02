@@ -1,0 +1,13 @@
+input_dir: Sources/GenericNetworkLayer/Resources
+output_dir: Sources/GenericNetworkLayer/Resources/Generated
+
+strings:
+  - inputs: Localizable/Localizable.strings
+    outputs:
+      templateName: structured-swift5
+      output: Strings.generated.swift
+      params:
+        publicAccess: false
+        enumName: "Strings"
+        bundle: GenericNetworkLayerResources.resourcesBundle
+

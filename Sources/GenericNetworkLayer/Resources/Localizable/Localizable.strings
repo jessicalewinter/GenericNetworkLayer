@@ -1,0 +1,13 @@
+"NetworkError.connectionFailure" = "Could not stablish a connection";
+"NetworkError.clientError" = "Client Error with code %@.\nData Response: %@";
+"NetworkError.decodeFailure" = "The server returned data in an unexpected format with error: \n%@";
+"NetworkError.encodeFailure" = "Failure to prepare payload to server with error: \n%@";
+"NetworkError.invalidDataToStringCast" = "Could not cast Data type to String";
+"NetworkError.invalidURLResponseToHTTPResponseCast" = "Could not cast URLResponse type to HTTPURLResponse";
+"NetworkError.invalidURL" = "Invalid URL: %@";
+"NetworkError.noData" =  "The server returned with no data";
+"NetworkError.serverError" = "Server error with code %@.\nRetry after: %@\nData Response: %@";
+"NetworkError.validationError" = "Validation Error: %@";
+"NetworkError.transportError" = "Transport error: %@";
+"NetworkError.unknown" = "Unknown error";
+"NetworkError.upgradeRequired" = "App needs to update";

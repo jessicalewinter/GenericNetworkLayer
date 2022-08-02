@@ -44,34 +44,35 @@ public enum NetworkError: Error {
 
 // MARK: LocalizedError
 extension NetworkError: LocalizedError {
+    
     public var errorDescription: String? {
         switch self {
         case .connectionFailure:
-            return "Could not stablish a connection"
+            return Strings.NetworkError.connectionFailure
         case let .clientError(statusCode, dataResponse):
-            return "Client Error with code \(statusCode).\nData Response: \(dataResponse)"
+            return Strings.NetworkError.clientError(statusCode, dataResponse)
         case .decodeFailure(let error):
-            return "The server returned data in an unexpected format with error: \n\(error.localizedDescription)"
+            return Strings.NetworkError.decodeFailure(error.localizedDescription)
         case .encodeFailure(let error):
-            return "Failure to prepare payload to server with error: \n\(error.localizedDescription)"
+            return Strings.NetworkError.encodeFailure(error.localizedDescription)
         case .invalidDataToStringCast:
-            return "Could not cast Data type to String"
+            return Strings.NetworkError.invalidDataToStringCast
         case .invalidURLResponseToHTTPResponseCast:
-            return "Could not cast URLResponse type to HTTPURLResponse"
+            return Strings.NetworkError.invalidURLResponseToHTTPResponseCast
         case .invalidURL(let message):
-            return "Invalid URL: \(message)"
+            return Strings.NetworkError.invalidURL(message)
         case .noData:
-            return "The server returned with no data"
+            return Strings.NetworkError.noData
         case let .serverError(statusCode, dataResponse, retryAfter):
-            return "Server error with code \(statusCode).\nRetry after: \(retryAfter ?? "no retry after provided")\nData Response: \(dataResponse)"
+            return Strings.NetworkError.serverError(statusCode, dataResponse, retryAfter ?? "no retry after provided")
         case .validationError(let message):
-            return "Validation Error: \(message)"
+            return Strings.NetworkError.validationError(message)
         case .transportError(let error):
-            return "Transport error: \(error.localizedDescription)"
+            return Strings.NetworkError.transportError(error.localizedDescription)
         case .unknown:
-            return "Unknown error"
+            return Strings.NetworkError.unknown
         case .upgradeRequired:
-            return "App needs to update"
+            return Strings.NetworkError.upgradeRequired
         }
     }
 }
