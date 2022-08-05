@@ -9,6 +9,8 @@ public protocol ImageCaching {
 }
 
 public final class ImageCacher: ImageCaching {
+    public static let shared = ImageCacher()
+    
     private let cache = NSCache<NSString, UIImage>()
 
     public func loadImage(for key: NSString) -> UIImage? {
