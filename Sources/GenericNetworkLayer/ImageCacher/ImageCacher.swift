@@ -1,3 +1,4 @@
+#if !os(macOS)
 import UIKit
 
 public protocol ImageCaching {
@@ -10,22 +11,21 @@ public protocol ImageCaching {
 public final class ImageCacher: ImageCaching {
     private let cache = NSCache<NSString, UIImage>()
 
-    func loadImage(for key: NSString) -> UIImage? {
+    public func loadImage(for key: NSString) -> UIImage? {
         cache.object(forKey: key)
     }
     
-    func cache(image: UIImage, withKey key: NSString) {
+    public func cache(image: UIImage, withKey key: NSString) {
         cache.setObject(image, forKey: key)
     }
     
-    func clear(for key: NSString) {
+    public func clear(for key: NSString) {
         cache.removeObject(forKey: key)
     }
     
-    func clearAll() {
+    public func clearAll() {
         cache.removeAllObjects()
     }
 }
 
-
-
+#endif
