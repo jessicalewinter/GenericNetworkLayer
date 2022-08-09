@@ -28,13 +28,7 @@ public final class ImageLoader: ImageLoading {
 
         willDownloadImage()
         
-
-        dataTask = session.dataTask(with: url) { [imageCache] data, _, error in
-            
-            if let error = error {
-                completion
-            }
-            
+        dataTask = session.dataTask(with: url) { [imageCache] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
             imageCache.cache(image: image, withKey: url.absoluteString as NSString)
             completion(image)
