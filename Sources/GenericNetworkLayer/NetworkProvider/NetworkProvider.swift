@@ -55,7 +55,7 @@ public final class NetworkProvider: NetworkProvidable {
             case 500...599:
                 completion(.failure(.serverError(statusCode, dataString)))
             default:
-                completion(.failure(.unknown))
+                completion(.failure(.untreatedCode(statusCode)))
             }
         }
         

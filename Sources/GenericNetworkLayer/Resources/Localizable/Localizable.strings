@@ -9,5 +9,6 @@
 "NetworkError.serverError" = "Server error with code %@.\nRetry after: %@\nData Response: %@";
 "NetworkError.validationError" = "Validation Error: %@";
 "NetworkError.transportError" = "Transport error: %@";
-"NetworkError.unknown" = "Unknown error";
+"NetworkError.unknown" = "Unknown error: %@";
+"NetworkError.untreatedCode" = "Untreated status code: %@";
 "NetworkError.upgradeRequired" = "App needs to update";
