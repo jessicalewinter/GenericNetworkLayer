@@ -40,8 +40,14 @@ enum Strings {
         static func transportError(_ p1: String) -> String {
             return Strings.tr("Localizable", "NetworkError.transportError", p1)
         }
-        /// Unknown
-        static let unknown = Strings.tr("Localizable", "NetworkError.unknown")
+        /// Unknown Error: %@
+        static func unknown(_ p1: String) -> String {
+            return Strings.tr("Localizable", "NetworkError.unknown", p1)
+        }
+        /// Untreated Status Code: %@
+        static func untreatedCode(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "NetworkError.untreatedCode", p1)
+        }
         /// App needs to update
         static let upgradeRequired = Strings.tr("Localizable", "NetworkError.upgradeRequired")
     }

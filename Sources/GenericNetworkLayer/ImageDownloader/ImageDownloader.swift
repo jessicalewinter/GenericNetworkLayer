@@ -1,31 +1,58 @@
-//
-//  File.swift
-//  
-//
-//  Created by Jessica Lewinter on 05/08/22.
-//
+#if !os(macOS)
 
+import Core
+import UIKit
 import Foundation
 
-protocol ImageLoading {
-    
+public protocol ImageLoading {
+    func download(from url: URL, willDownloadImage: (@escaping () -> Void), completion: @escaping ((UIImage?) -> Void))
+    func cancelRequest()
+    func cacheImage(from url: URL)
 }
 
-final class ImageLoader {
+public final class ImageLoader: ImageLoading {
+    private var dataTask: URLSessionDataTaskable?
     private let session: URLSessionable
+    private let imageCache: ImageCaching
+
+    public init(urlSession: URLSessionable = URLSession.shared, imageCache: ImageCaching = ImageCacher.shared) {
+        self.session = urlSession
+        self.imageCache = imageCache
+    }
+
+    public func download(from url: URL, willDownloadImage: (@escaping () -> Void), completion: @escaping ((UIImage?) -> Void)) {
+        if let cachedImage = imageCache.loadImage(for: url.absoluteString as NSString) {
+            completion(cachedImage)
+            return
+        }
+
+        willDownloadImage()
+        
+
+        dataTask = session.dataTask(with: url) { [imageCache] data, _, error in
+            
+            if let error = error {
+                completion
+            }
+            
+            guard let data = data, let image = UIImage(data: data) else { return }
+            imageCache.cache(image: image, withKey: url.absoluteString as NSString)
+            completion(image)
+        }
+        dataTask?.resume()
+    }
+
+    public func cancelRequest() {
+        dataTask?.cancel()
+    }
     
-    var dataTask: URLSessionDataTaskable?
-    
-    init(
-        session: URLSessionable
-    ) {
-        self.session = session
+    public func cacheImage(from url: URL) {
+        dataTask = session.dataTask(with: url) { [imageCache] data, _, _ in
+            guard let data = data, let image = UIImage(data: data) else { return }
+            imageCache.cache(image: image, withKey: url.absoluteString as NSString)
+        }
+        dataTask?.resume()
     }
 }
 
-struct Config {
-    let countLimit: Int
-    let memoryLimit: Int
-
-    static let defaultConfig = Config(countLimit: 100, memoryLimit: 1024 * 1024 * 100) // 100 MB
-}
+#endif
