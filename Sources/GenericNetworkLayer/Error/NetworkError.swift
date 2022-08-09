@@ -1,10 +1,27 @@
 import Foundation
 
+public protocol AutoEquatable: Equatable { }
+
+public extension AutoEquatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        var lhsDump = String()
+        dump(lhs, to: &lhsDump)
+
+        var rhsDump = String()
+        dump(rhs, to: &rhsDump)
+
+        return rhsDump == lhsDump
+    }
+}
+
 /// Map all network possible errors
-public enum NetworkError: Error {
+public enum NetworkError: Error, AutoEquatable {
     /// Could not stablish a connection
     case connectionFailure
     
+    /// Could not convert data to an UIImage
+    case convertDataToImageFailed(Data)
+
     /// Client Error with statusCode between 400 and 500
     case clientError(_ statusCode: Int, _ dataResponse: String)
     
@@ -52,6 +69,8 @@ extension NetworkError: LocalizedError {
         switch self {
         case .connectionFailure:
             return Strings.NetworkError.connectionFailure
+        case .convertDataToImageFailed(let data):
+            return Strings.NetworkError.convertDataToImageFailed(data)
         case let .clientError(statusCode, dataResponse):
             return Strings.NetworkError.clientError(statusCode, dataResponse)
         case .decodeFailure(let error):
@@ -79,13 +98,6 @@ extension NetworkError: LocalizedError {
         case .upgradeRequired:
             return Strings.NetworkError.upgradeRequired
         }
-    }
-}
-
-// MARK: Equatable
-extension NetworkError: Equatable {
-    public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
-        return true
     }
 }
 

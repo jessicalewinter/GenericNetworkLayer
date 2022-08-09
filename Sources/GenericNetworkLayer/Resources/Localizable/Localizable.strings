@@ -1,4 +1,5 @@
 "NetworkError.connectionFailure" = "Could not stablish a connection";
+"NetworkError.convertDataToImageFailed" = "Could not convert data to an UIImage: \n%@";
 "NetworkError.clientError" = "Client Error with code %@.\nData Response: %@";
 "NetworkError.decodeFailure" = "The server returned data in an unexpected format with error: \n%@";
 "NetworkError.encodeFailure" = "Failure to prepare payload to server with error: \n%@";

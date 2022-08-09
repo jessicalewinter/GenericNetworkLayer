@@ -1,4 +1,3 @@
-#if !os(macOS)
 import UIKit
 
 public protocol ImageCaching {
@@ -30,4 +29,3 @@ public final class ImageCacher: ImageCaching {
     }
 }
 
-#endif

@@ -6,6 +6,10 @@ enum Strings {
     enum NetworkError {
         /// Could not stablish a connection
         static let connectionFailure = Strings.tr("Localizable", "NetworkError.connectionFailure")
+        /// Could not convert data to an UIImage: %@
+        static func convertDataToImageFailed(_ p1: Data) -> String {
+            return Strings.tr("Localizable", "NetworkError.convertDataToImageFailed", p1 as CVarArg)
+        }
         /// Client Error with code %@.\nData Response: %@
         static func clientError(_ p1: Int, _ p2: String) -> String {
             return Strings.tr("Localizable", "NetworkError.clientError", p1, p2)

@@ -1,11 +1,8 @@
-#if !os(macOS)
-
-import Core
 import UIKit
 import Foundation
 
 public protocol ImageLoading {
-    func download(from url: URL, willDownloadImage: (@escaping () -> Void), completion: @escaping ((UIImage?) -> Void))
+    func download(from url: URL, completion: @escaping (Result<UIImage, NetworkError>) -> Void)
     func cancelRequest()
     func cacheImage(from url: URL)
 }
@@ -20,19 +17,28 @@ public final class ImageLoader: ImageLoading {
         self.imageCache = imageCache
     }
 
-    public func download(from url: URL, willDownloadImage: (@escaping () -> Void), completion: @escaping ((UIImage?) -> Void)) {
+    public func download(from url: URL, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
         if let cachedImage = imageCache.loadImage(for: url.absoluteString as NSString) {
-            completion(cachedImage)
-            return
+            return completion(.success(cachedImage))
         }
-
-        willDownloadImage()
         
-        dataTask = session.dataTask(with: url) { [imageCache] data, _, _ in
-            guard let data = data, let image = UIImage(data: data) else { return }
+        dataTask = session.dataTask(url: url) { [imageCache] data, _, error in
+            if let error = error {
+                completion(.failure(.transportError(error)))
+            }
+            
+            guard let data = data else {
+                return completion(.failure(.noData))
+            }
+                    
+            guard let image = UIImage(data: data) else {
+                return completion(.failure(.convertDataToImageFailed(data)))
+            }
+            
             imageCache.cache(image: image, withKey: url.absoluteString as NSString)
-            completion(image)
+            completion(.success(image))
         }
+        
         dataTask?.resume()
     }
 
@@ -41,7 +47,7 @@ public final class ImageLoader: ImageLoading {
     }
     
     public func cacheImage(from url: URL) {
-        dataTask = session.dataTask(with: url) { [imageCache] data, _, _ in
+        dataTask = session.dataTask(url: url) { [imageCache] data, _, _ in
             guard let data = data, let image = UIImage(data: data) else { return }
             imageCache.cache(image: image, withKey: url.absoluteString as NSString)
         }
@@ -49,4 +55,3 @@ public final class ImageLoader: ImageLoading {
     }
 }
 
-#endif
