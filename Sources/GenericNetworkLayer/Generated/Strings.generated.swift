@@ -6,6 +6,10 @@ enum Strings {
     enum NetworkError {
         /// Could not stablish a connection
         static let connectionFailure = Strings.tr("Localizable", "NetworkError.connectionFailure")
+        /// Could not convert data to an UIImage: %@
+        static func convertDataToImageFailed(_ p1: Data) -> String {
+            return Strings.tr("Localizable", "NetworkError.convertDataToImageFailed", p1 as CVarArg)
+        }
         /// Client Error with code %@.\nData Response: %@
         static func clientError(_ p1: Int, _ p2: String) -> String {
             return Strings.tr("Localizable", "NetworkError.clientError", p1, p2)
@@ -40,8 +44,14 @@ enum Strings {
         static func transportError(_ p1: String) -> String {
             return Strings.tr("Localizable", "NetworkError.transportError", p1)
         }
-        /// Unknown
-        static let unknown = Strings.tr("Localizable", "NetworkError.unknown")
+        /// Unknown Error: %@
+        static func unknown(_ p1: String) -> String {
+            return Strings.tr("Localizable", "NetworkError.unknown", p1)
+        }
+        /// Untreated Status Code: %@
+        static func untreatedCode(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "NetworkError.untreatedCode", p1)
+        }
         /// App needs to update
         static let upgradeRequired = Strings.tr("Localizable", "NetworkError.upgradeRequired")
     }

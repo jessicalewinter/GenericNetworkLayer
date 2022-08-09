@@ -1,66 +1,105 @@
 import XCTest
 import class Foundation.Bundle
 @testable import GenericNetworkLayer
-final class GenericNetworkLayerTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
 
-        // Some of the APIs that we use below are available in macOS 10.13 and above.
-        guard #available(macOS 10.13, *) else {
+final class GenericNetworkLayerTests: XCTestCase {
+    
+}
+
+protocol TowersNetworkSessionProtocol {
+    func execute(url: URL?, completion: @escaping (Result<Data, Error>) -> ())
+}
+
+enum TowerNetworkError: Error {
+    case invalidURL
+    case missingData
+}
+
+class TowersNetworkSession: TowersNetworkSessionProtocol {
+    func execute(url: URL?, completion: @escaping (Result<Data, Error>) -> ()) {
+        guard let url = url else {
+            completion(.failure(TowerNetworkError.invalidURL))
             return
         }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+            }
+            
+            if let data = data {
+                completion(.success(data))
+            } else {
+                completion(.failure(TowerNetworkError.missingData))
+            }
+        }
+        .resume()
+    }
+}
 
-        // Mac Catalyst won't have `Process`, but it is supported for executables.
-        #if !targetEnvironment(macCatalyst)
+class TowersMockNetworkSession: TowersNetworkSessionProtocol {
+    var completion: Result<Data, Error>?
+    
+    func execute(url: URL?, completion: @escaping (Result<Data, Error>) -> ()) {
+        guard url != nil else {
+            completion(.failure(TowerNetworkError.invalidURL))
+            return
+        }
+        
+        self.completion.map(completion)
+    }
+}
 
-        let fooBinary = productsDirectory.appendingPathComponent("GenericNetworkLayer")
+struct Tower: Codable, Equatable {
+    let name: String
+}
 
-        let process = Process()
-        process.executableURL = fooBinary
-
-        let pipe = Pipe()
-        process.standardOutput = pipe
-
-        try process.run()
-        process.waitUntilExit()
-
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
-
-        XCTAssertEqual(output, "Hello, world!\n")
-        #endif
+class TowersDataManager {
+    private let session: TowersNetworkSessionProtocol
+    
+    init(session: TowersNetworkSessionProtocol) {
+        self.session = session
     }
     
-    struct Blogger {
-        func makeHeadline(from input: String) -> String {
-            input.capitalized
+    func tallestTowers(completion: @escaping (Result<[Tower], Error>) -> ()) {
+        let url = URL(string: "https://tower.free.beeceptor.com/tallest")
+        
+        session.execute(url: url) { result in
+            switch result {
+            case .success(let data):
+                let result = Result(catching: {
+                    try JSONDecoder().decode([Tower].self, from: data)
+                })
+                completion(result)
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
-    
-    func test_makeHeadline_shouldShowCapitalizeAllStrings() {
-        // Given
-        let blogger = Blogger()
-        let input: String = "hello mama"
-        let expectedResult: String = "Hello Mama"
-        
-        // When
-        let result = blogger.makeHeadline(from: input)
-        
-        // Then
-        XCTAssertEqual(result, expectedResult)
-    }
+}
 
-    /// Returns path to the built products directory.
-    var productsDirectory: URL {
-      #if os(macOS)
-        for bundle in Bundle.allBundles where bundle.bundlePath.hasSuffix(".xctest") {
-            return bundle.bundleURL.deletingLastPathComponent()
-        }
-        fatalError("couldn't find the products directory")
-      #else
-        return Bundle.main.bundleURL
-      #endif
+class TestandoTests: XCTestCase {
+    func testTallestTowersData() throws {
+      // 1
+      var result: Result<[Tower], Error>?
+
+      // 2
+      let tallestTowers: [Tower] = [Tower(name: "hello")]
+      let response = try JSONEncoder().encode(tallestTowers)
+
+      // 3
+      let session = TowersMockNetworkSession()
+      session.completion = .success(response)
+
+      // 4
+      let dataManager = TowersDataManager(session: session)
+
+      // 5
+      dataManager.tallestTowers {
+        result = $0
+      }
+
+      // 6d
+      XCTAssertEqual(try result?.get(), tallestTowers)
     }
 }

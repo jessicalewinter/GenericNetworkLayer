@@ -1,10 +1,27 @@
 import Foundation
 
+public protocol AutoEquatable: Equatable { }
+
+public extension AutoEquatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        var lhsDump = String()
+        dump(lhs, to: &lhsDump)
+
+        var rhsDump = String()
+        dump(rhs, to: &rhsDump)
+
+        return rhsDump == lhsDump
+    }
+}
+
 /// Map all network possible errors
-public enum NetworkError: Error {
+public enum NetworkError: Error, AutoEquatable {
     /// Could not stablish a connection
     case connectionFailure
     
+    /// Could not convert data to an UIImage
+    case convertDataToImageFailed(Data)
+
     /// Client Error with statusCode between 400 and 500
     case clientError(_ statusCode: Int, _ dataResponse: String)
     
@@ -34,12 +51,15 @@ public enum NetworkError: Error {
     
     /// Indicates an error on the transport layer, e.g. not being able to connect to the server
     case transportError(Error)
-    
+        
+    /// Indicates a general error
+    case unknown(Error)
+
+    /// Untreated status code
+    case untreatedCode(Int)
+
     /// App needs to upgrade
     case upgradeRequired
-    
-    /// Indicates an error on the transport layer, e.g. not being able to connect to the server
-    case unknown
 }
 
 // MARK: LocalizedError
@@ -49,6 +69,8 @@ extension NetworkError: LocalizedError {
         switch self {
         case .connectionFailure:
             return Strings.NetworkError.connectionFailure
+        case .convertDataToImageFailed(let data):
+            return Strings.NetworkError.convertDataToImageFailed(data)
         case let .clientError(statusCode, dataResponse):
             return Strings.NetworkError.clientError(statusCode, dataResponse)
         case .decodeFailure(let error):
@@ -69,18 +91,13 @@ extension NetworkError: LocalizedError {
             return Strings.NetworkError.validationError(message)
         case .transportError(let error):
             return Strings.NetworkError.transportError(error.localizedDescription)
-        case .unknown:
-            return Strings.NetworkError.unknown
+        case .unknown(let error):
+            return Strings.NetworkError.unknown(error.localizedDescription)
+        case .untreatedCode(let statusCode):
+            return Strings.NetworkError.untreatedCode(statusCode)
         case .upgradeRequired:
             return Strings.NetworkError.upgradeRequired
         }
-    }
-}
-
-// MARK: Equatable
-extension NetworkError: Equatable {
-    public static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
-        return true
     }
 }
 
@@ -108,7 +125,7 @@ extension NetworkError: CaseIterable {
             .validationError("mock"),
             .transportError(NetworkError.errorMock),
             .upgradeRequired,
-            .unknown
+            .unknown(errorMock)
         ]
     }
 }
