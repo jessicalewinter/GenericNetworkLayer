@@ -23,7 +23,7 @@ public final class NetworkProvider: NetworkProvidable {
         
         let request = URLRequest(endpoint: endpoint)
         
-        let task = session.dataTask(request: request) { data, response, error in            
+        let task = session.dataTask(request: request) { data, response, error in
             if let error = error {
                 completion(.failure(.transportError(error)))
             }
