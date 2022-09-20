@@ -1,7 +1,8 @@
 import Foundation
 
 public protocol JSONDecodable {
-    /// Apple's documentation:
+    var keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy { get set }
+
     /// Decodes a top-level value of the given type from the given JSON representation.
     ///
     /// - parameter type: The type of the value to decode.

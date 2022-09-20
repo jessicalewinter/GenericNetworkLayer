@@ -26,6 +26,8 @@ let package = Package(
         ),
         .testTarget(
             name: "GenericNetworkLayerTests",
-            dependencies: ["GenericNetworkLayer"]),
+            dependencies: ["GenericNetworkLayer"],
+            resources: [.process("TestDoubles/result.json")]
+        )
     ]
 )
