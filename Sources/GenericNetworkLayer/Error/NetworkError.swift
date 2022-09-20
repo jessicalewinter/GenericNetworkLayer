@@ -23,7 +23,7 @@ public enum NetworkError: Error, AutoEquatable {
     case convertDataToImageFailed(Data)
 
     /// Client Error with statusCode between 400 and 500
-    case clientError(_ statusCode: Int, _ dataResponse: String)
+    case clientError(_ statusCode: Int, _ dataResponse: String? = nil)
     
     /// The server sent data in an wrong format
     case decodeFailure(Error)
@@ -44,7 +44,7 @@ public enum NetworkError: Error, AutoEquatable {
     case noData
     
     /// Server-side Error with statusCode between 500 and 600. If `retryAfter` is set, the client can send the same request after the given time.
-    case serverError(_ statusCode: Int, _ dataResponse: String, _ retryAfter: String? = nil)
+    case serverError(_ statusCode: Int, _ dataResponse: String? = nil, _ retryAfter: String? = nil)
     
     /// Server-side validation error
     case validationError(String)
@@ -72,7 +72,7 @@ extension NetworkError: LocalizedError {
         case .convertDataToImageFailed(let data):
             return Strings.NetworkError.convertDataToImageFailed(data)
         case let .clientError(statusCode, dataResponse):
-            return Strings.NetworkError.clientError(statusCode, dataResponse)
+            return Strings.NetworkError.clientError(statusCode, dataResponse ?? "Empty data")
         case .decodeFailure(let error):
             return Strings.NetworkError.decodeFailure(error.localizedDescription)
         case .encodeFailure(let error):
@@ -86,7 +86,9 @@ extension NetworkError: LocalizedError {
         case .noData:
             return Strings.NetworkError.noData
         case let .serverError(statusCode, dataResponse, retryAfter):
-            return Strings.NetworkError.serverError(statusCode, dataResponse, retryAfter ?? "no retry after provided")
+            let data = dataResponse ?? "Empty data"
+            let retryAfter = retryAfter ?? "No retry after provided"
+            return Strings.NetworkError.serverError(statusCode, data, retryAfter)
         case .validationError(let message):
             return Strings.NetworkError.validationError(message)
         case .transportError(let error):
