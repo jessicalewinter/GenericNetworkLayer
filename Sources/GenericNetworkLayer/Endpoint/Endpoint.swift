@@ -8,7 +8,6 @@ public protocol Endpoint {
     var method: HTTPMethod { get }
     var task: Task { get }
     var headers: Headers? { get }
-    var parametersEncoding: ParametersEncoding { get }
 }
 
 extension Endpoint {

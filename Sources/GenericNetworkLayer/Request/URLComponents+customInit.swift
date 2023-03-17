@@ -9,8 +9,7 @@ extension URLComponents {
         let url = endpoint.baseURL.appendingPathComponent(endpoint.path)
         self.init(url: url, resolvingAgainstBaseURL: false)
         
-        guard case let .requestParameters(parameters) = endpoint.task,
-            endpoint.parametersEncoding == .url else { return }
+        guard case let .requestParameters(parameters) = endpoint.task else { return }
         
         queryItems = parameters.map({ (key, value) in
             return URLQueryItem(name: key, value: String(describing: value))
