@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol NetworkProvidable {
-    func request<T: Decodable>(type: T.Type, endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void)
+    func request<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void)
 }
 
 public final class NetworkProvider: NetworkProvidable {
@@ -19,7 +19,7 @@ public final class NetworkProvider: NetworkProvidable {
         self.decoder = decoder
     }
     
-    public func request<T: Decodable>(type: T.Type, endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void) {
+    public func request<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void) {
         
         let request = URLRequest(endpoint: endpoint)
         

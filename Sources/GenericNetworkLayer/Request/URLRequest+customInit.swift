@@ -16,9 +16,8 @@ extension URLRequest {
                addValue(value, forHTTPHeaderField: key)
            }
 
-           guard case let .requestWithBody(payload) = endpoint.task,
-                 endpoint.parametersEncoding == .json else {
-                   return
+           guard case let .requestWithBody(payload) = endpoint.task else {
+                return
            }
                       
            if let payloadEncoded = payload.prepareBody() {

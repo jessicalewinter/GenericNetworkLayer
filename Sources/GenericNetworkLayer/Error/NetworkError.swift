@@ -60,6 +60,10 @@ public enum NetworkError: Error, AutoEquatable {
 
     /// App needs to upgrade
     case upgradeRequired
+    
+    enum Internal {
+        case unavailable
+    }
 }
 
 // MARK: LocalizedError

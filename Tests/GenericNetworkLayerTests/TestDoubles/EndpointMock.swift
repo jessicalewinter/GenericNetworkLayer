@@ -29,8 +29,4 @@ final class EndpointMock: Endpoint {
     var headers: Headers? {
         nil
     }
-    
-    var parametersEncoding: ParametersEncoding {
-        .url
-    }
 }
