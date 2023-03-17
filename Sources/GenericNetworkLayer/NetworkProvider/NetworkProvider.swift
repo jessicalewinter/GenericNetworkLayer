@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol NetworkProvidable {
-    func request<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void)
+    func request<T: Decodable>(type: T.Type, endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void)
 }
 
 public final class NetworkProvider: NetworkProvidable {
@@ -19,8 +19,7 @@ public final class NetworkProvider: NetworkProvidable {
         self.decoder = decoder
     }
     
-    public func request<T: Decodable>(endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void) {
-        
+    public func request<T: Decodable>(type: T.Type, endpoint: Endpoint, completion: @escaping (Result<T, NetworkError>) -> Void) {
         let request = URLRequest(endpoint: endpoint)
         
         let task = session.dataTask(request: request) { data, response, error in
@@ -45,7 +44,7 @@ public final class NetworkProvider: NetworkProvidable {
             switch statusCode {
             case 200...299:
                 do {
-                    let model = try self.decoder.decode(T.self, from: data)
+                    let model = try self.decoder.decode(type, from: data)
                     completion(.success(model))
                 } catch let error {
                     completion(.failure(.decodeFailure(error)))

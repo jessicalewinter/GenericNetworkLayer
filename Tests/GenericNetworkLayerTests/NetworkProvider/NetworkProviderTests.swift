@@ -14,7 +14,7 @@ final class NetworkProviderTests: XCTestCase {
         
         // When
         doubles.decoderMock.result = .success(expectedOutput)
-        sut.request(endpoint: endpointMock) { resultMock = $0 }
+        sut.request(type: SuccessModelMock.self, endpoint: endpointMock) { resultMock = $0 }
         
         // Then
         XCTAssertEqual(resultMock, .success(expectedOutput))
@@ -31,8 +31,8 @@ final class NetworkProviderTests: XCTestCase {
         
         // When
         doubles.decoderMock.result = .failure(NetworkError.connectionFailure)
-        sut.request(endpoint: endpointMock) { resultMock = $0 }
-        
+        sut.request(type: WrongModelMock.self, endpoint: endpointMock) { resultMock = $0 }
+
         // Then
         XCTAssertEqual(resultMock, .failure(.decodeFailure(NetworkError.connectionFailure)))
         XCTAssertEqual(doubles.dataTaskSpy.messages, [.resume])
@@ -54,8 +54,8 @@ final class NetworkProviderTests: XCTestCase {
         // When
         doubles.decoderMock.result = .failure(clientError)
         doubles.sessionMock.response = doubles.sessionMock.createResponse(statusCode: inputStatusCode)
-        sut.request(endpoint: endpointMock) { resultMock = $0 }
-        
+        sut.request(type: SuccessModelMock.self, endpoint: endpointMock) { resultMock = $0 }
+
         // Then
         XCTAssertEqual(resultMock, .failure(clientError))
         XCTAssertEqual(doubles.dataTaskSpy.messages, [.resume])
@@ -77,8 +77,8 @@ final class NetworkProviderTests: XCTestCase {
         // When
         doubles.decoderMock.result = .failure(serverError)
         doubles.sessionMock.response = doubles.sessionMock.createResponse(statusCode: inputStatusCode)
-        sut.request(endpoint: endpointMock) { resultMock = $0 }
-        
+        sut.request(type: SuccessModelMock.self, endpoint: endpointMock) { resultMock = $0 }
+
         // Then
         XCTAssertEqual(resultMock, .failure(serverError))
         XCTAssertEqual(doubles.dataTaskSpy.messages, [.resume])
@@ -97,7 +97,7 @@ final class NetworkProviderTests: XCTestCase {
         
         // When
         doubles.decoderMock.result = .success(expectedOutput)
-        sut.request(endpoint: endpointMock) { result in
+        sut.request(type: SuccessModelMock.self, endpoint: endpointMock) { result in
             resultMock = result
             switch result {
             case .failure(let error):
@@ -126,7 +126,7 @@ final class NetworkProviderTests: XCTestCase {
         // When
         doubles.decoderMock.result = .failure(NetworkError.connectionFailure)
         
-        sut.request(endpoint: endpointMock) { result in
+        sut.request(type: WrongModelMock.self, endpoint: endpointMock) { result in
             resultMock = result
             switch result {
             case .failure(let error):
